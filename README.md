@@ -1,0 +1,1 @@
+## Spotube Metadata Plugin Template

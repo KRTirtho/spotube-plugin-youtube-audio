@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "name": "Alphanumeric plugin name with hyphens or underscore",
+  "author": "YouTube Audio",
+  "description": "YouTube audio source plugin for Spotube",
+  "entryPoint": "YouTubeAudioSourcePlugin",
+  "apis": ["localstorage"],
+  "abilities": ["audio-source"],
+  "repository": "https://github.com/KRTirtho/spotube-plugin-template",
+  "pluginApiVersion": "2.0.0"
+}

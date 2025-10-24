@@ -1,0 +1,49 @@
+import "module:std" as std
+
+var HttpClient = std.HttpClient
+
+class CorePlugin {
+  var client: HttpClient
+
+  construct (this.client)
+
+  /// Checks for updates to the plugin.
+  /// [currentConfig] is just plugin.json's file content.
+  ///
+  /// If there's an update available, it will return a map of:
+  /// - [downloadUrl] -> direct download url to the new plugin.smplug file.
+  /// - [version] of the new plugin.
+  /// - [changelog] Optionally, a changelog for the update (markdown supported).
+  ///
+  /// If no update is available, it will return null.
+  fun checkUpdate(currentConfig: Map) -> Future {
+    // TODO: Check for updates
+  }
+
+  /// Returns the support information for the plugin in Markdown or plain text.
+  /// Supports images and links.
+  get support -> string {
+    // TODO: Return support information
+    return ""
+  }
+
+  /// Scrobble the provided details to the scrobbling service supported by the plugin.
+  /// "scrobbling" must be set as an ability in the plugin.json
+  /// [details] is a map containing the scrobble information, such as:
+  /// - [id] -> The unique identifier of the track.
+  /// - [title] -> The title of the track.
+  /// - [artists] -> List of artists
+  ///   - [id] -> The unique identifier of the artist.
+  ///   - [name] -> The name of the artist.
+  /// - [album] -> The album of the track
+  ///   - [id] -> The unique identifier of the album.
+  ///   - [name] -> The name of the album.
+  /// - [timestamp] -> The timestamp of the scrobble (optional).
+  /// - [duration_ms] -> The duration of the track in milliseconds (optional).
+  /// - [isrc] -> The ISRC code of the track (optional).
+  fun scrobble(details: Map) {
+    // TODO: Implement scrobbling
+  }
+}
+
+export { CorePlugin }
