@@ -3,6 +3,22 @@ import "module:std" as std
 
 var YouTubeEngine = spotube_plugin.YouTubeEngine
 
+class Converter {
+  static fun toSpotubeMatchObject(res: List) -> List<Map> {
+    return res.map((d){
+      return {
+        "id": d["id"],
+        "title": d["title"],
+        "artists": [d["author"]],
+        "duration": d["duration"],
+        "thumbnail": d["thumbnail"],
+        "externalUri": "https://youtube.com/watch?v=${d["id"]}",
+      }.toJson()
+    }).toList()
+  }
+}
+
+
 class AudioSourceEndpoint {
   var yt: YouTubeEngine
   construct () {
@@ -12,8 +28,8 @@ class AudioSourceEndpoint {
   // List of containers and their supported qualities
   get supportedPresets -> List {
     return [
-      { type: "lossy", name: "m4a", qualities: [ { bitrate: 44 }, { bitrate: 96 }, { bitrate: 128 }, { bitrate: 256 } ] }.toJson(),      
-      { type: "lossy", name: "webm", qualities: [ { bitrate: 44 }, { bitrate: 96 }, { bitrate: 128 }, { bitrate: 256 } ] }.toJson(),
+      { type: "lossy", name: "m4a", qualities: [ { bitrate: 256000 }, { bitrate: 128000 }, { bitrate: 96000 }, { bitrate: 44000 } ] }.toJson(),      
+      { type: "lossy", name: "webm", qualities: [ { bitrate: 256000 }, { bitrate: 128000 }, { bitrate: 96000 }, { bitrate: 44000 } ] }.toJson(),
     ]
   }
   
@@ -27,16 +43,12 @@ class AudioSourceEndpoint {
     return yt.search(
       track["isrc"] != null ? track["isrc"] : "${track["name"]} ${artists}"
     ).then((res){
-      return res.map((d){
-        return {
-          "id": d["id"],
-          "title": d["title"],
-          "artists": [d["author"]],
-          "duration": d["duration"],
-          "thumbnail": d["thumbnail"],
-          "externalUri": "https://youtube.com/watch?v=${d["id"]}",
-        }.toJson()
-      }).toList()
+      if(res.isEmpty && track["isrc"] != null) {
+        return yt.search(
+          track["isrc"] != null ? track["isrc"] : "${track["name"]} ${artists}"
+        ).then((res)=> Converter.toSpotubeMatchObject(res))
+      }
+      return Converter.toSpotubeMatchObject(res)
     })
   }
 
