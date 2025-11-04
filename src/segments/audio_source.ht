@@ -28,7 +28,7 @@ class AudioSourceEndpoint {
   // List of containers and their supported qualities
   get supportedPresets -> List {
     return [
-      { type: "lossy", name: "m4a", qualities: [ { bitrate: 256000 }, { bitrate: 128000 }, { bitrate: 96000 }, { bitrate: 44000 } ] }.toJson(),      
+      { type: "lossy", name: "mp4", qualities: [ { bitrate: 256000 }, { bitrate: 128000 }, { bitrate: 96000 }, { bitrate: 44000 } ] }.toJson(),      
       { type: "lossy", name: "webm", qualities: [ { bitrate: 256000 }, { bitrate: 128000 }, { bitrate: 96000 }, { bitrate: 44000 } ] }.toJson(),
     ]
   }
@@ -39,13 +39,13 @@ class AudioSourceEndpoint {
   /// @returns Future<List<SpotubeAudioSourceMatchObject>>
   fun matches(track: Map) -> List {
     final artists = track["artists"].map((a)=> a["name"]).join(", ")
-    
+    final hasISRC = track["isrc"] != null && track["isrc"].isNotEmpty;
     return yt.search(
-      track["isrc"] != null ? track["isrc"] : "${track["name"]} ${artists}"
+      hasISRC ? track["isrc"] : "${track["name"]} ${artists}"
     ).then((res){
-      if(res.isEmpty && track["isrc"] != null) {
+      if(res.isEmpty && hasISRC) {
         return yt.search(
-          track["isrc"] != null ? track["isrc"] : "${track["name"]} ${artists}"
+          "${track["name"]} ${artists}"
         ).then((res)=> Converter.toSpotubeMatchObject(res))
       }
       return Converter.toSpotubeMatchObject(res)
