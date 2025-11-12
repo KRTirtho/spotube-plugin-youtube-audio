@@ -29,6 +29,7 @@ dependencies:
       path: packages/desktop_webview_window
       url: https://github.com/KRTirtho/flutter-plugins.git
   youtube_explode_dart: ^2.5.2
+  flutter_markdown_plus: ^1.0.5
 
 dev_dependencies:
   flutter_test:

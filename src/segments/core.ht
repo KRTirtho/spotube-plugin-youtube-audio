@@ -17,14 +17,76 @@ class CorePlugin {
   ///
   /// If no update is available, it will return null.
   fun checkUpdate(currentConfig: Map) -> Future {
-    // TODO: Check for updates
+    var versionParts = currentConfig["version"].split(".")
+    var major = int.parse(versionParts[0])
+    var minor = int.parse(versionParts[1])
+    var patch = int.parse(versionParts[2])
+
+    return client.get_req(
+      "https://api.github.com/repos/KRTirtho/spotube-plugin-youtube-audio/releases/latest",
+      options: RequestOptions(
+        headers: {
+          "Accept": "application/vnd.github.v3+json"
+        }.toJson()
+      ),
+    ).then((res) {
+      var data = res.data
+      var latestVersion = data["tag_name"].split(".")
+
+      if (latestVersion.length < 3) {
+        throw "Invalid version format from GitHub API. Expected format: <major>.<minor>.<patch>. Got: ${data["tag_name"]}"
+      }
+
+      var latestMajor = int.parse(latestVersion[0])
+      var latestMinor = int.parse(latestVersion[1])
+      var latestPatch = int.parse(latestVersion[2])
+
+      var isUpdateAvailable = latestMajor > major ||
+        (latestMajor == major && latestMinor > minor) ||
+        (latestMajor == major && latestMinor == minor && latestPatch > patch)
+
+      if (!isUpdateAvailable) return null
+
+      var downloadUrl = data["assets"].firstWhere(
+        (asset) => asset["name"] == "plugin.smplug",
+        orElse: () => null
+      )?["browser_download_url"]
+
+      if (downloadUrl == null) {
+        throw "No download URL found for the plugin update"
+      }
+
+      var changelog = data["body"] ?? "No changelog available"
+      return {
+        "downloadUrl": downloadUrl,
+        "version": data["tag_name"],
+        "changelog": changelog
+      }.toJson()
+    })
   }
 
   /// Returns the support information for the plugin in Markdown or plain text.
   /// Supports images and links.
   get support -> string {
     // TODO: Return support information
-    return ""
+    return "
+# Support
+
+This project and lots of other projects use the following:
+
+- [yt-dlp](https://github.com/yt-dlp/yt-dlp)
+- [NewPipe](https://github.com/TeamNewPipe) 
+- [youtube_explode_dart](https://github.com/Hexer10/youtube_explode_dart)
+
+These are extremely hard to maintain projects as YouTube is constantly changing their APIs every week, making it
+harder and harder to reverse engineer their protocols and retrieving audio/video streams. So please contribute to 
+those projects financially or technically, however you can if you have the ability to do so.
+
+## Financial donation links
+- yt-dlp: [github.com/yt-dlp/yt-dlp/blob/master/Maintainers.md](https://github.com/yt-dlp/yt-dlp/blob/master/Maintainers.md#maintainers)
+- NewPipe: [newpipe.net/donate](https://newpipe.net/donate/)
+- YoutubeExplodeDart: [github.com/sponsors/Hexer10](https://github.com/sponsors/Hexer10)
+"
   }
 
   /// Scrobble the provided details to the scrobbling service supported by the plugin.
