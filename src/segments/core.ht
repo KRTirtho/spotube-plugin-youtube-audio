@@ -1,6 +1,8 @@
 import "module:std" as std
 
 var HttpClient = std.HttpClient
+var HttpResponse = std.HttpResponse
+var RequestOptions = std.RequestOptions
 
 class CorePlugin {
   var client: HttpClient
