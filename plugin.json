@@ -6,6 +6,6 @@
   "entryPoint": "YouTubeAudioSourcePlugin",
   "apis": ["localstorage"],
   "abilities": ["audio-source"],
-  "repository": "https://github.com/KRTirtho/spotube-plugin-youtube-audio",
+  "repository": "https://github.com/Ka-iPy/spotube-plugin-youtube-audio",
   "pluginApiVersion": "2.0.0"
 }
