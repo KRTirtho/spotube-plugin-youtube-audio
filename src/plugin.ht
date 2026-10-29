@@ -24,4 +24,4 @@ class YouTubeAudioSourcePlugin {
   }
 }
 
-export { TemplateMetadataProviderPlugin }
+export { YouTubeAudioSourcePlugin }

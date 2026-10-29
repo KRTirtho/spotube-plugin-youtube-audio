@@ -8,3 +8,6 @@ archive:
 	zip -r plugin.zip ./; \
 	cd ../..; \
 	mv build/archive/plugin.zip build/plugin.smplug
+
+test: compile
+	cd example && flutter test

@@ -30,11 +30,15 @@ jobs:
           channel: stable
           flutter-version: 3.35.2
 
+      # Spotube 5.x runs hetu_script 0.4.2; newer dev tools emit incompatible bytecode
       - name: Install dependencies
-        run: dart pub global activate hetu_script_dev_tools
+        run: dart pub global activate hetu_script_dev_tools 0.1.0+2
       
       - name: Run build
         run: make
+
+      - name: Run tests
+        run: make test
 
       - name: Archive plugin
         run: make archive
